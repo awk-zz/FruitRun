@@ -21,16 +21,25 @@ public class PlayerMovement : MonoBehaviour
     public TMP_Text starText;  // 引用UI组件
     public float fallThreshold = -5f;  // 掉落阈值
     public GameObject gameOverUI;  // 失败UI
+    
+    public int maxHealth = 5; //玩家最大生命值
+    private int currentHealth; // 玩家当前生命值
+    public GameObject[] lifeObjects;
+
 
     private int maxJumpCount = 1;  // 默认跳跃次数
     private int jumpCount = 0;  // 跳跃计数
 
     private PlayerState currentState = PlayerState.Normal;  // 初始状态
+    private Vector3 originalScale; // 保存玩家的初始缩放比例
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        originalScale = transform.localScale; 
         UpdateStarUI();  // 初始化星星UI
+        currentHealth = maxHealth;  // 初始化生命值
+        UpdateHealthObjects();  // 初始化生命值2D对象
 
         if (gameOverUI != null)
         {
@@ -40,8 +49,19 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector2.right * moveSpeed * Time.deltaTime);
-        // 自动向右移动
+        // 左右移动逻辑
+        if (Input.GetKey(KeyCode.A))
+        {
+            rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);  // 向左移动
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            rb.velocity = new Vector2(moveSpeed, rb.velocity.y);  // 向右移动
+        }
+        else
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);  // 松开按键时停止水平移动
+        }
 
         if (transform.position.y < fallThreshold)
         {
@@ -88,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
     {
         currentState = PlayerState.Small;
         maxJumpCount = int.MaxValue;  // 允许无限跳跃
-        transform.localScale = new Vector3(0.5f, 0.5f, 1f);
+        transform.localScale =originalScale * 0.5f;
         jumpCount = 0; 
     }
 
@@ -97,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
     {
         currentState = PlayerState.Big;
         maxJumpCount = 1;  // 限制为单次跳跃
-        transform.localScale = new Vector3(2f, 2f, 1f);
+        transform.localScale = originalScale * 1.5f;
         jumpCount = 0; 
     }
 
@@ -106,10 +126,35 @@ public class PlayerMovement : MonoBehaviour
     {
         currentState = PlayerState.Normal;
         maxJumpCount = 1;  // 限制为单次跳跃
-        transform.localScale = new Vector3(1f, 1f, 1f);
+        transform.localScale = originalScale;
         jumpCount = 0; 
     }
 
+    public void TakeDamage()
+    {
+        currentHealth--;  // 减少生命值
+        UpdateHealthObjects();  // 更新生命值2D对象的显示
+
+        if (currentHealth <= 0)
+        {
+            GameOver();
+        }
+    }
+     private void UpdateHealthObjects()
+    {
+        // 根据当前生命值更新2D对象的显示
+        for (int i = 0; i < lifeObjects.Length; i++)
+        {
+            if (i < currentHealth)
+            {
+                lifeObjects[i].SetActive(true);  // 启用2D对象
+            }
+            else
+            {
+                lifeObjects[i].SetActive(false);  // 禁用2D对象
+            }
+        }
+    }
     public void AddStar()
     {
         starCount++;
