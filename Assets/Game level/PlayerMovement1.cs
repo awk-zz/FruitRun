@@ -1,18 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private enum PlayerState 
-    {
-        Normal, 
-        Big, 
-        Small
-    }
-    
+    // 之前的变量声明
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
     private Rigidbody2D rb;
@@ -20,15 +13,20 @@ public class PlayerMovement : MonoBehaviour
     private int starCount = 0;  // 收集星星数量
     public TMP_Text starText;  // 引用UI组件
     public float fallThreshold = -5f;  // 掉落阈值
-    public GameObject gameOverUI;  // 失败UI
-    
+
     public int maxHealth = 5; //玩家最大生命值
     private int currentHealth; // 玩家当前生命值
     public GameObject[] lifeObjects;
 
-
     private int maxJumpCount = 1;  // 默认跳跃次数
     private int jumpCount = 0;  // 跳跃计数
+
+    private enum PlayerState
+    {
+        Normal,
+        Big,
+        Small
+    }
 
     private PlayerState currentState = PlayerState.Normal;  // 初始状态
     private Vector3 originalScale; // 保存玩家的初始缩放比例
@@ -36,15 +34,10 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        originalScale = transform.localScale; 
+        originalScale = transform.localScale;
         UpdateStarUI();  // 初始化星星UI
         currentHealth = maxHealth;  // 初始化生命值
         UpdateHealthObjects();  // 初始化生命值2D对象
-
-        if (gameOverUI != null)
-        {
-            gameOverUI.SetActive(false);  // 隐藏GameOverUI
-        }
     }
 
     void Update()
@@ -66,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
         if (transform.position.y < fallThreshold)
         {
             GameOver();
-        }   
+        }
 
         if (Input.GetKeyDown(KeyCode.Space) && CanJump())
         {
@@ -85,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
         // 变小状态下允许无限跳跃
         return true;
     }
-       
+
     void Jump()
     {
         rb.velocity = new Vector2(rb.velocity.x, 0);  // 重置速度，防止多次叠加
@@ -108,8 +101,8 @@ public class PlayerMovement : MonoBehaviour
     {
         currentState = PlayerState.Small;
         maxJumpCount = int.MaxValue;  // 允许无限跳跃
-        transform.localScale =originalScale * 0.5f;
-        jumpCount = 0; 
+        transform.localScale = originalScale * 0.5f;
+        jumpCount = 0;
     }
 
     // 玩家变大后调用
@@ -118,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
         currentState = PlayerState.Big;
         maxJumpCount = 1;  // 限制为单次跳跃
         transform.localScale = originalScale * 1.5f;
-        jumpCount = 0; 
+        jumpCount = 0;
     }
 
     // 玩家恢复正常状态
@@ -127,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
         currentState = PlayerState.Normal;
         maxJumpCount = 1;  // 限制为单次跳跃
         transform.localScale = originalScale;
-        jumpCount = 0; 
+        jumpCount = 0;
     }
 
     public void TakeDamage()
@@ -140,7 +133,8 @@ public class PlayerMovement : MonoBehaviour
             GameOver();
         }
     }
-     private void UpdateHealthObjects()
+
+    private void UpdateHealthObjects()
     {
         // 根据当前生命值更新2D对象的显示
         for (int i = 0; i < lifeObjects.Length; i++)
@@ -155,6 +149,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
     public void AddStar()
     {
         starCount++;
@@ -168,9 +163,11 @@ public class PlayerMovement : MonoBehaviour
 
     void GameOver()
     {
-        // 激活失败UI
-        gameOverUI.SetActive(true);
-        // 暂停游戏
-        Time.timeScale = 0f;
+        // 存储失败结果
+        PlayerPrefs.SetInt("GameResult", 0);  // 0 表示失败
+        // 存储当前关卡名称
+        PlayerPrefs.SetString("CurrentLevel", SceneManager.GetActiveScene().name);
+        // 加载结果场景
+        SceneManager.LoadScene("ResultScene");
     }
 }

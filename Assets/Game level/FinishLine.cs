@@ -1,34 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FinishLine : MonoBehaviour
 {
-    public GameObject victoryUI;
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             Victory();
         }
     }
+
     void Victory()
     {
-        victoryUI.SetActive(true);
-        Time.timeScale = 0f;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-       if (victoryUI != null)
-        {
-            victoryUI.SetActive(false);  // 隐藏Victory UI
-        }  
+        // 存储玩家当前游玩的关卡索引
+        PlayerPrefs.SetInt("CurrentLevelIndex", SceneManager.GetActiveScene().buildIndex);
+        // 存储胜利结果
+        PlayerPrefs.SetInt("GameResult", 1);  // 1 表示胜利
+                                              // 加载结果场景
+        SceneManager.LoadScene("ResultScene");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
+
