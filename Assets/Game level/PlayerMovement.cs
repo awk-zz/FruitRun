@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip takeDamageSound;
     private AudioSource audioSource;
 
-    private enum PlayerState
+    public enum PlayerState
     {
         Normal,
         Big,
@@ -244,4 +244,9 @@ public class PlayerMovement : MonoBehaviour
             audioSource.PlayOneShot(portalSound);
         }
     }
+    public PlayerState GetCurrentState()
+    {
+        return currentState;  // 返回当前的玩家状态
+    }
+
 }

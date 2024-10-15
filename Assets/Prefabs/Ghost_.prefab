@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1504103578370888140}
   - component: {fileID: 8590628722781977217}
   - component: {fileID: 227519391054844086}
-  - component: {fileID: 8395626600966510090}
+  - component: {fileID: -147285342633906684}
   m_Layer: 0
   m_Name: Ghost_
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.92, y: 0.113, z: 0}
-  m_LocalScale: {x: 1.4066, y: 1.4066, z: 1.4066}
+  m_LocalScale: {x: 1.8169053, y: 1.8169053, z: 1.8169053}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 6e405645c3d6bf640a0c455b9383138e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
   moveDistance: 3
   loopMovement: 1
   moveLeftToRight: 1
---- !u!114 &8395626600966510090
+--- !u!114 &-147285342633906684
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,7 +185,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5989317977559626914}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72688400cbf90c84cb014a2014766082, type: 3}
+  m_Script: {fileID: 11500000, guid: 36529e39f07b1c24399778ce08a8857e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCorruptStar: 1
+  fadeDuration: 2
+  maxAttacks: 2
+  attackCooldown: 0.5
